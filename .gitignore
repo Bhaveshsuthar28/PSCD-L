@@ -1,3 +1,47 @@
-./data.md
-Dataset
-vscode
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+# Heavy Data & Dataset directories
+Dataset/
+Datasets/
+dataset/
+datasets/
+data/
+outputs/
+output/
+
+# Model checkpoints & weights
+checkpoints/
+*.ckpt
+*.pt
+*.pth
+*.bin
+*.onnx
+
+# Cache & feature caches
+*.npy
+*.npz
+*.h5
+*.hdf5
+.cache/
+
+# Environments & virtualenvs
+venv/
+.venv/
+env/
+ENV/
+
+# IDE & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs & runs
+*.log
+logs/
+lightning_logs/
+wandb/
