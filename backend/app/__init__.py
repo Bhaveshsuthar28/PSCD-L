@@ -1,0 +1,1 @@
+"""TRINETRA FastAPI application package."""

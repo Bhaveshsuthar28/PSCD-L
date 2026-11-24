@@ -58,6 +58,13 @@ def parse_args():
     )
 
     parser.add_argument(
+        "--split",
+        choices=["test", "val"],
+        default="test",
+        help="Evaluation split: official test or route-independent validation.",
+    )
+
+    parser.add_argument(
         "--index",
         type=Path,
         default=DEFAULT_INDEX,
@@ -146,31 +153,57 @@ def validate_args(args):
     with args.index.open("r", encoding="utf-8") as file:
         records = json.load(file)
 
-    if not isinstance(records, list):
-        raise ValueError("Official test index must be a JSON list.")
+    if args.split == "test":
+        if not isinstance(records, list):
+            raise ValueError("Official test index must be a JSON list.")
 
-    if len(records) != 429:
-        raise ValueError(
-            f"Expected 429 official test samples, found {len(records)}."
-        )
-
-    for record in records:
-        if record.get("split") != "test":
+        if len(records) != 429:
             raise ValueError(
-                f"Non-test sample found: {record.get('sample_id')}"
+                f"Expected 429 official test samples, found {len(records)}."
             )
 
+        samples = records
+
+        for record in samples:
+            if record.get("split") != "test":
+                raise ValueError(
+                    f"Non-test sample found: {record.get('sample_id')}"
+                )
+
+    else:
+        if not isinstance(records, dict) or "val" not in records:
+            raise ValueError(
+                "Validation index must be a manifest containing train and val."
+            )
+
+        samples = records["val"]
+
+        if len(samples) != 372:
+            raise ValueError(
+                f"Expected 372 route-validation samples, found {len(samples)}."
+            )
+
+        for record in samples:
+            if record.get("split") != "train":
+                raise ValueError(
+                    f"Validation sample must originate from train: "
+                    f"{record.get('sample_id')}"
+                )
+
+    for record in samples:
         if record.get("dataset") != "vl_cmu":
             raise ValueError(
                 f"Unexpected dataset: {record.get('dataset')}"
             )
 
-    sample_ids = [record["sample_id"] for record in records]
+    sample_ids = [record["sample_id"] for record in samples]
 
     if len(sample_ids) != len(set(sample_ids)):
-        raise ValueError("Duplicate sample IDs in official test index.")
+        raise ValueError("Duplicate sample IDs in evaluation index.")
 
-    print("Official test index validated: 429 samples.")
+    print(
+        f"{args.split.upper()} index validated: {len(samples)} samples."
+    )
 
 
 # ---------------------------------------------------------
@@ -288,7 +321,7 @@ def evaluate(model, loader, device, args):
 
     use_amp = device.type == "cuda"
 
-    print("\nStarting official test evaluation...")
+    print(f"\nStarting {args.split} evaluation...")
     print("Threshold:", args.threshold)
     print("AMP:", use_amp)
 
@@ -456,7 +489,7 @@ def save_results(
 
     results = {
         "dataset": "VL-CMU-CD-binary255",
-        "split": "official_test",
+        "split": "official_test" if args.split == "test" else "route_validation",
         "num_samples": len(per_sample_results),
         "threshold": args.threshold,
         "checkpoint": str(args.checkpoint.resolve()),
@@ -502,7 +535,7 @@ def main():
     )
 
     print("=" * 65)
-    print("TRINETRA OFFICIAL VL-CMU TEST EVALUATION")
+    print(f"TRINETRA VL-CMU {args.split.upper()} EVALUATION")
     print("=" * 65)
 
     print("Device:", device)
@@ -511,20 +544,23 @@ def main():
         print("GPU:", torch.cuda.get_device_name(0))
 
     # Dataset
-    test_dataset = VLCMUCDataset(
+    eval_dataset = VLCMUCDataset(
         index_path=args.index,
         cache_dir=args.cache_dir,
         dataset_root=args.dataset_root,
-        split="test",
+        split=args.split,
     )
 
-    if len(test_dataset) != 429:
+    expected_samples = 429 if args.split == "test" else 372
+
+    if len(eval_dataset) != expected_samples:
         raise RuntimeError(
-            f"Expected 429 test samples, found {len(test_dataset)}."
+            f"Expected {expected_samples} {args.split} samples, "
+            f"found {len(eval_dataset)}."
         )
 
     loader = DataLoader(
-        test_dataset,
+        eval_dataset,
         batch_size=args.batch_size,
         shuffle=False,
         num_workers=args.num_workers,
@@ -561,7 +597,7 @@ def main():
 
     # Display
     print("\n" + "=" * 65)
-    print("OFFICIAL TEST RESULTS")
+    print(f"{args.split.upper()} RESULTS")
     print("=" * 65)
 
     print("Samples:", len(per_sample))

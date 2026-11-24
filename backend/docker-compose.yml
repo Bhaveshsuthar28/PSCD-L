@@ -1,0 +1,18 @@
+services:
+  trinetra-backend:
+    build:
+      context: ..
+      dockerfile: backend/Dockerfile
+    container_name: trinetra-backend
+    ports:
+      - "8000:8000"
+    environment:
+      TRINETRA_APP_ENV: development
+      TRINETRA_HOST: 0.0.0.0
+      TRINETRA_PORT: 8000
+      TRINETRA_LOG_LEVEL: INFO
+    volumes:
+      - ../outputs/training/checkpoints:/app/outputs/training/checkpoints:ro
+      - ../backend/storage:/app/backend/storage
+      - ../backend/logs:/app/backend/logs
+    restart: unless-stopped

@@ -43,7 +43,7 @@ DEFAULT_INDEX = PROJECT_ROOT / "outputs/index/pscd_pers.json"
 DEFAULT_DATASET_ROOT = PROJECT_ROOT / "Dataset/PSCD_pers"
 DEFAULT_CHECKPOINT = (
     PROJECT_ROOT
-    / "outputs/training/checkpoints/trinetra-00-0.3455.ckpt"
+    / "outputs/training/checkpoints/trinetra-33-0.1482.ckpt"
 )
 DEFAULT_OUTPUT = PROJECT_ROOT / "outputs/evaluation/pscd_pers"
 

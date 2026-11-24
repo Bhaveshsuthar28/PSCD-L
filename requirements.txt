@@ -1,9 +1,9 @@
-torch>=2.1
-torchvision>=0.17
 pillow
 numpy
 opencv-python
 pytorch-lightning>=2.1
+lightning>=2.1
+transformers>=4.40
 hydra-core>=1.3
 wandb
 torchmetrics
@@ -12,3 +12,5 @@ fastapi
 uvicorn[standard]
 python-multipart
 albumentations
+torch>=2.1
+torchvision>=0.17

@@ -1,0 +1,41 @@
+services:
+  trinetra-backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: trinetra-backend
+    ports:
+      - "8000:8000"
+    environment:
+      TRINETRA_APP_ENV: development
+      TRINETRA_HOST: 0.0.0.0
+      TRINETRA_PORT: 8000
+      TRINETRA_LOG_LEVEL: INFO
+      TRINETRA_CORS_ORIGINS: '["http://localhost:8080","http://127.0.0.1:8080","http://localhost:5173","http://127.0.0.1:5173"]'
+    volumes:
+      - ./outputs/training/checkpoints:/app/outputs/training/checkpoints:ro
+      - ./backend/storage:/app/backend/storage
+      - ./backend/logs:/app/backend/logs
+      - trinetra_hf_cache:/root/.cache/huggingface
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    restart: unless-stopped
+
+  trinetra-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: trinetra-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      trinetra-backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  trinetra_hf_cache:

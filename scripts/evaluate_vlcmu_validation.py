@@ -29,7 +29,7 @@ DEFAULT_DATASET_ROOT = (
 
 DEFAULT_CHECKPOINT = (
     PROJECT_ROOT
-    / "outputs/training/checkpoints/trinetra-00-0.3455.ckpt"
+    / "outputs/training/checkpoints/trinetra-33-0.1482.ckpt"
 )
 
 DEFAULT_OUTPUT = (

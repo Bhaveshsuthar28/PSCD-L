@@ -15,11 +15,39 @@ output/
 
 # Model checkpoints & weights
 checkpoints/
+checkpoint/
 *.ckpt
 *.pt
 *.pth
 *.bin
 *.onnx
+*.safetensors
+
+# Project-specific excluded folders
+task/
+task2/
+docs/
+
+# Runtime storage, uploads, evidence, exports, and local databases
+backend/storage/
+backend/backups/
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Large video files
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+
+# Backup files
+*.bak
+*.pre_*_backup
+backups/
 
 # Cache & feature caches
 *.npy
@@ -27,12 +55,23 @@ checkpoints/
 *.h5
 *.hdf5
 .cache/
+.pytest_cache/
+*.tsbuildinfo
+
+# Frontend dependencies & build artifacts
+node_modules/
+dist/
+test-results/
+playwright-report/
 
 # Environments & virtualenvs
 venv/
 .venv/
 env/
 ENV/
+.env
+.env.local
+.env.*.local
 
 # IDE & OS files
 .vscode/

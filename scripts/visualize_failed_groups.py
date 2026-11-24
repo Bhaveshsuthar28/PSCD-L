@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 CHECKPOINT = (
     ROOT / "outputs" / "training" / "checkpoints"
-    / "trinetra-00-0.3455.ckpt"
+    / "trinetra-33-0.1482.ckpt"
 )
 
 INDEX = ROOT / "outputs" / "index" / "vl_cmu_train_val_split.json"

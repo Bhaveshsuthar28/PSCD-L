@@ -29,7 +29,7 @@ DEFAULT_DATASET_ROOT = ROOT / "Dataset" / "VL-CMU-CD-binary255"
 
 DEFAULT_CHECKPOINT = (
     ROOT / "outputs" / "training" / "checkpoints"
-    / "trinetra-00-0.3455.ckpt"
+    / "trinetra-33-0.1482.ckpt"
 )
 
 DEFAULT_OUTPUT = ROOT / "outputs" / "visualizations" / "pilot"

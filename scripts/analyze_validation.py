@@ -27,7 +27,7 @@ DEFAULT_CHECKPOINT = (
     / "outputs"
     / "training"
     / "checkpoints"
-    / "trinetra-00-0.3455.ckpt"
+    / "trinetra-33-0.1482.ckpt"
 )
 
 DEFAULT_INDEX = (
